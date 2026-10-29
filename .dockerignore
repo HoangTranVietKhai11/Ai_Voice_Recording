@@ -1,0 +1,39 @@
+# Git
+.git
+.gitignore
+
+# Python
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/.pytest_cache
+**/pytest_cache
+**/.mypy_cache
+
+# Virtual environments
+**/.venv
+**/venv
+**/env
+
+# Node
+frontend/node_modules
+frontend/.vite
+
+# Dev/test artifacts
+data/
+backend/tests/
+scripts/benchmark_*.py
+**/*.log
+
+# Editor
+.vscode
+.idea
+**/*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docs không cần trong image
+docs/
+whisper/

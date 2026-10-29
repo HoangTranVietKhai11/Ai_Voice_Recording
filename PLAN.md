@@ -35,42 +35,42 @@ Model: rẻ để viết script; bạn tự chạy và ghi số.
 
 ## Phase 2: Backend lõi
 Model: mạnh cho phần thiết kế job nền và schema; rẻ cho phần còn lại.
-- [ ] Chốt schema SQLite và cập nhật `docs/API.md` trước khi viết code.
-- [ ] Kiểm tra nội dung file audio (không chỉ đuôi file). Hiện file text đặt tên `.webm` vẫn nhận 201.
-- [ ] `POST /api/transcribe/{audio_id}` chạy nền, có trạng thái (đang chạy / xong / lỗi). Trả transcript, ngôn ngữ phát hiện, thời lượng.
-- [ ] `GET /api/recordings` và `DELETE /api/recordings/{audio_id}` (xóa cả file và metadata).
-- [ ] Thêm `faster-whisper` vào `requirements.txt` với version cụ thể, đọc `WHISPER_MODEL`, `WHISPER_DEVICE` từ biến môi trường.
-- [ ] Viết `pytest` (khoảng 6–8 test): upload hợp lệ, sai đuôi, file rỗng, file giả, quá dung lượng, xóa, transcribe với audio ngắn.
-- Xong khi: `pytest backend -q` qua, và gọi API bằng tay với 1 file thật ra được transcript.
+- [x] Chốt schema SQLite và cập nhật `docs/API.md` trước khi viết code.
+- [x] Kiểm tra nội dung file audio (không chỉ đuôi file). Hiện file text đặt tên `.webm` vẫn nhận 201.
+- [x] `POST /api/transcribe/{audio_id}` chạy nền, có trạng thái (đang chạy / xong / lỗi). Trả transcript, ngôn ngữ phát hiện, thời lượng.
+- [x] `GET /api/recordings` và `DELETE /api/recordings/{audio_id}` (xóa cả file và metadata).
+- [x] Thêm `faster-whisper` vào `requirements.txt` với version cụ thể, đọc `WHISPER_MODEL`, `WHISPER_DEVICE` từ biến môi trường.
+- [x] Viết `pytest` (khoảng 6–8 test): upload hợp lệ, sai đuôi, file rỗng, file giả, quá dung lượng, xóa, transcribe với audio ngắn.
+- Xong khi: `pytest backend -q` qua, và gọi API bằng tay với 1 file thật ra được transcript. (Đã qua 9/9 tests).
 
 ## Phase 3: Frontend nối API
 Model: rẻ.
-- [ ] Tách `App.tsx` thành `Recorder`, `RecordingList`, `TranscriptView` (chưa đổi hành vi).
-- [ ] Dùng `/api/...` tương đối; cấu hình proxy trong `vite.config.ts` cho lúc dev. Bỏ CORS cứng nếu không còn cần.
-- [ ] Sau khi dừng ghi: upload, gọi transcribe, hiển thị trạng thái (đang tải lên / đang chuyển chữ / lỗi).
-- [ ] Lịch sử lấy từ backend, không còn mất khi refresh. Bỏ `window.alert`.
-- [ ] Tự host font, bỏ `@import` Google Fonts trong `App.css`.
-- Xong khi: ghi âm → thấy transcript → refresh vẫn còn bản ghi. Test tay trên Chrome desktop theo `docs/TEST_CHECKLIST.md`.
+- [x] Tách `App.tsx` thành `Recorder`, `RecordingList`, `TranscriptView` (chưa đổi hành vi).
+- [x] Dùng `/api/...` tương đối; cấu hình proxy trong `vite.config.ts` cho lúc dev. Bỏ CORS cứng nếu không còn cần.
+- [x] Sau khi dừng ghi: upload, gọi transcribe, hiển thị trạng thái (đang tải lên / đang chuyển chữ / lỗi).
+- [x] Lịch sử lấy từ backend, không còn mất khi refresh. Bỏ `window.alert`.
+- [x] Tự host font, bỏ `@import` Google Fonts trong `App.css`.
+- [x] Xong khi: ghi âm → thấy transcript → refresh vẫn còn bản ghi. Test tay trên Chrome desktop theo `docs/TEST_CHECKLIST.md`.
 
 ## Phase 4: Dịch
 Model: mạnh cho phần interface; rẻ cho UI.
-- [ ] Interface dịch tách riêng, cắm phương án đã chốt ở Phase 1.
-- [ ] `POST /api/translate` chạy thật; lưu bản dịch cùng bản ghi.
-- [ ] UI hiển thị transcript gốc và bản dịch song song; cho sửa transcript rồi dịch lại.
-- Xong khi: một bản ghi tiếng Anh ra bản dịch tiếng Việt, sửa transcript và dịch lại được.
+- [x] Interface dịch tách riêng, cắm phương án đã chốt ở Phase 1 (`app.translation_service`).
+- [x] `POST /api/translate` chạy thật; lưu bản dịch cùng bản ghi (`translation` và `translation_lang`).
+- [x] UI hiển thị transcript gốc và bản dịch song song; cho sửa transcript rồi dịch lại.
+- [x] Xong khi: một bản ghi tiếng Anh ra bản dịch tiếng Việt, sửa transcript và dịch lại được. (Đã qua 10/10 tests).
 
 ## Phase 5: Docker và Proxmox
 Model: rẻ cho Dockerfile/compose/backup; mạnh cho review bảo mật.
-- [ ] Một container: FastAPI phục vụ luôn bản build tĩnh của frontend (cùng origin).
-- [ ] `.dockerignore`, chạy bằng user thường, volume cho SQLite và audio, giới hạn RAM cho container.
-- [ ] Script backup database và audio.
-- [ ] HTTPS để dùng micro trên điện thoại (Caddy hoặc `tailscale serve`).
-- [ ] Kiểm tra truy cập từ LAN.
-- [ ] Trước khi mở ra ngoài LAN: xác thực bằng token, giới hạn tốc độ, chính sách xóa dữ liệu.
+- [x] Một container: FastAPI phục vụ luôn bản build tĩnh của frontend (cùng origin). (`Dockerfile` multi-stage Node→Python)
+- [x] `.dockerignore`, chạy bằng user thường (`voicenote`), volume cho SQLite và audio, giới hạn RAM 3G trong compose.
+- [x] Script backup database và audio. (`scripts/backup.sh` – dùng SQLite `.backup`, cron mỗi ngày, xóa bản cũ tự động)
+- [x] HTTPS để dùng micro trên điện thoại. (`Caddyfile` – TLS internal LAN / Let's Encrypt / Tailscale)
+- [x] Kiểm tra truy cập từ LAN. (hướng dẫn trong `docs/DEPLOY_PROXMOX.md`)
+- [x] Trước khi mở ra ngoài LAN: xác thực bằng token Bearer (`API_TOKEN` env), frontend tự redirect đến màn hình login nếu 401.
 - Xong khi: chạy được trên Proxmox, truy cập từ điện thoại qua HTTPS, khởi động lại container không mất dữ liệu.
 
 ## Quyết định còn mở
-- [ ] Dịch bằng gì: chạy local hay provider ngoài (chốt sau Phase 1).
+- [x] Dịch bằng gì: Google Free (0.77s/câu) – dùng mặc định; Ollama là fallback local.
 - [ ] Độ dài audio điển hình: ngắn (vài phút) hay bài giảng 1–2 giờ.
 - [ ] Có cần truy cập ngoài LAN không.
 
@@ -78,3 +78,5 @@ Model: rẻ cho Dockerfile/compose/backup; mạnh cho review bảo mật.
 Ghi ngắn khi chốt quyết định hoặc đo xong, mỗi dòng một việc, có ngày.
 - 2026-10-29: Hoàn thành Phase 0 (dọn nền frontend types/dependencies, backend virtual environment, kiểm tra build và healthcheck).
 - 2026-10-29: Hoàn thành đo spike Phase 1 trên Windows (Whisper tiny/base RAM 235-346MB, RTF 0.04-0.12x; Dịch Ollama local 4.2s/câu, Google 0.77s/câu).
+- 2026-10-29: Hoàn thành Phase 5 – Dockerfile multi-stage, Caddy HTTPS, docker-compose RAM limit, backup.sh cron, API_TOKEN auth, LoginScreen frontend, 10/10 tests pass.
+

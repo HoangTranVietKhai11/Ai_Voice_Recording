@@ -1,16 +1,83 @@
 services:
-  backend:
-    build: ./backend
-    container_name: voicenote-backend
-    ports:
-      - "8000:8000"
-    environment:
-      APP_NAME: VoiceNote API
-      UPLOAD_DIR: /data/audio
-      MAX_UPLOAD_MB: 100
-    volumes:
-      - voicenote_audio:/data/audio
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: voicenote
     restart: unless-stopped
+
+    # ── Giới hạn tài nguyên (điều chỉnh theo máy Proxmox) ──────────────
+    deploy:
+      resources:
+        limits:
+          memory: 3G        # Whisper base ~350 MB, để dư cho hệ điều hành
+          cpus: "2.0"
+        reservations:
+          memory: 512M
+
+    ports:
+      - "127.0.0.1:8000:8000"   # Chỉ bind localhost; Caddy sẽ proxy
+
+    environment:
+      APP_NAME: VoiceNote AI
+      UPLOAD_DIR: /data/audio
+      DB_PATH: /data/db/voicenote.db
+      MAX_UPLOAD_MB: "150"
+      WHISPER_MODEL: base        # tiny | base | small
+      WHISPER_DEVICE: cpu
+      WHISPER_COMPUTE: int8
+      TRANSLATION_PROVIDER: google  # google | ollama | mock
+      # API_TOKEN: "THAY_BANG_MAT_KHAU_MANH"   # Bỏ comment khi mở ra ngoài LAN
+      # CORS_ORIGINS: "https://voicenote.example.com"
+
+    volumes:
+      - voicenote_audio:/data/audio   # File âm thanh
+      - voicenote_db:/data/db         # SQLite database
+      # Mount thư mục models Whisper đã tải để không cần tải lại sau khi build
+      # - ./whisper:/root/.cache/huggingface
+
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ── Caddy: HTTPS tự động + reverse proxy ────────────────────────────
+  caddy:
+    image: caddy:2-alpine
+    container_name: voicenote-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"     # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"
 
 volumes:
   voicenote_audio:
+    driver: local
+  voicenote_db:
+    driver: local
+  caddy_data:
+    driver: local
+  caddy_config:
+    driver: local

@@ -1,17 +1,30 @@
 # Frontend
 frontend/node_modules/
 frontend/dist/
+frontend/.vite/
 
 # Python
 backend/.venv/
 backend/__pycache__/
+**/__pycache__/
 **/*.pyc
+**/*.pyo
 
-# Runtime data and secrets
+# Runtime data và secrets – không bao giờ commit
+data/
 backend/data/
 backend/.env
 .env
+
+# Build info
+frontend/tsconfig.tsbuildinfo
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Backups
+backups/
 
 # External reference repository
 whisper/
