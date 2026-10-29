@@ -14,23 +14,24 @@ Model: rẻ (hoặc tự làm).
 
 ## Phase 1: Đo thử (spike), chưa viết tính năng
 Model: rẻ để viết script; bạn tự chạy và ghi số.
-- [ ] Script ngắn chạy `faster-whisper` với model `tiny` và `base` trên 1 file 1–2 phút (1 tiếng Việt, 1 tiếng Anh).
-- [ ] Chạy trên máy Windows, ghi thời gian xử lý và RAM.
+- [x] Script ngắn chạy `faster-whisper` với model `tiny` và `base` trên 1 file 1–2 phút (1 tiếng Việt, 1 tiếng Anh).
+- [x] Chạy trên máy Windows, ghi thời gian xử lý và RAM.
 - [ ] Chạy trên Proxmox (i5-3470, không GPU), ghi thời gian xử lý và RAM. Kiểm tra cài và chạy được không (CPU này có thể không có AVX2).
-- [ ] Thử 2–3 phương án dịch trên 10 câu mẫu (local hoặc provider). Chấm chất lượng bằng mắt, ghi tốc độ.
-- [ ] Điền bảng kết quả bên dưới.
+- [x] Thử 2–3 phương án dịch trên 10 câu mẫu (local hoặc provider). Chấm chất lượng bằng mắt, ghi tốc độ.
+- [x] Điền bảng kết quả bên dưới.
 - Xong khi: chốt được model phiên âm cho từng máy và phương án dịch.
 
 | Máy | Model | Độ dài audio | Thời gian xử lý | RAM đỉnh | Ghi chú |
 |---|---|---|---|---|---|
-| Windows | tiny | | chưa đo | chưa đo | |
-| Windows | base | | chưa đo | chưa đo | |
-| Proxmox | tiny | | chưa đo | chưa đo | |
-| Proxmox | base | | chưa đo | chưa đo | |
+| Windows | tiny | 21.7s (vi) / 29.8s (en) | 1.60s (vi) / 1.28s (en) | 235.2 MB | int8, RTF 0.04-0.07x, load 1.2s |
+| Windows | base | 21.7s (vi) / 29.8s (en) | 2.68s (vi) / 3.18s (en) | 345.7 MB | int8, RTF 0.11-0.12x, nhận dạng vi chính xác hơn |
+| Proxmox | tiny | | chưa đo | chưa đo | Chờ triển khai Proxmox |
+| Proxmox | base | | chưa đo | chưa đo | Chờ triển khai Proxmox |
 
 | Phương án dịch | Chạy ở đâu | Chất lượng (vi) | Tốc độ | Chọn? |
 |---|---|---|---|---|
-| | | chưa đo | chưa đo | |
+| Google Translate Free | Cloud API | Tốt, tự nhiên | ~0.77s/câu | Tùy chọn (khi có mạng) |
+| Ollama (llama3.2:latest) | Local (máy chủ) | Rất tốt, hiểu ngữ cảnh | ~4.21s/câu | Tùy chọn (ưu tiên local) |
 
 ## Phase 2: Backend lõi
 Model: mạnh cho phần thiết kế job nền và schema; rẻ cho phần còn lại.
@@ -76,3 +77,4 @@ Model: rẻ cho Dockerfile/compose/backup; mạnh cho review bảo mật.
 ## Nhật ký
 Ghi ngắn khi chốt quyết định hoặc đo xong, mỗi dòng một việc, có ngày.
 - 2026-10-29: Hoàn thành Phase 0 (dọn nền frontend types/dependencies, backend virtual environment, kiểm tra build và healthcheck).
+- 2026-10-29: Hoàn thành đo spike Phase 1 trên Windows (Whisper tiny/base RAM 235-346MB, RTF 0.04-0.12x; Dịch Ollama local 4.2s/câu, Google 0.77s/câu).
