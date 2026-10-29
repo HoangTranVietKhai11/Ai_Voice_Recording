@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root{font-family:'DM Sans',sans-serif;color:#e8edf7;background:#0b1020;font-synthesis:none;text-rendering:optimizeLegibility}
+*{box-sizing:border-box}
+body{margin:0;min-width:320px;min-height:100vh;background:radial-gradient(ellipse at 50% -20%,#23335a 0%,#11182d 38%,#0b1020 75%)}
+button{font:inherit;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+.app-shell{width:min(980px,calc(100% - 36px));margin:0 auto;padding:30px 0 24px}
+.topbar{display:flex;align-items:center;gap:12px}
+.brand-mark{width:44px;height:44px;border-radius:14px;background:#7c6cff;color:white;display:grid;place-items:center;box-shadow:0 8px 30px #7665ff40}
+.brand-title{font:700 20px 'Space Grotesk',sans-serif;letter-spacing:-.5px}
+.brand-title span{color:#9b91ff}
+.brand-subtitle{color:#8c98b3;font-size:12px;margin-top:2px}
+.privacy-pill{margin-left:auto;border:1px solid #293650;border-radius:999px;padding:8px 12px;display:flex;align-items:center;gap:7px;color:#b8c7df;font-size:12px}
+.privacy-pill svg{color:#7fe0bd}
+.hero{padding:64px 0 30px;text-align:center}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:2px;color:#9288ff;margin:0 0 12px}
+.hero h1{font:600 clamp(32px,5vw,48px)/1.12 'Space Grotesk',sans-serif;letter-spacing:-1.7px;margin:0}
+.hero h1 span{color:#9c91ff}
+.hero-copy{max-width:590px;margin:16px auto 0;color:#9ca9c3;font-size:14px;line-height:1.7}
+.recorder-card{border:1px solid #293550;background:linear-gradient(145deg,#151f37ed,#11182bed);border-radius:24px;padding:28px 32px 0;box-shadow:0 24px 70px #0002;overflow:hidden}
+.card-heading,.section-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.card-heading h2,.section-heading h2{font:600 20px 'Space Grotesk',sans-serif;margin:0}
+.status-dot{display:flex;align-items:center;gap:7px;color:#8290aa;font-size:10px;font-weight:700;letter-spacing:1.2px}
+.status-dot span{width:7px;height:7px;background:#68758e;border-radius:50%}
+.status-dot.active span{background:#f87171;box-shadow:0 0 0 4px #f8717122;animation:pulse 1.5s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 7px #f8717108}}
+.timer{text-align:center;font:500 clamp(54px,10vw,76px)/1.2 'Space Grotesk',sans-serif;letter-spacing:3px;margin-top:35px;font-variant-numeric:tabular-nums}
+.timer-caption{text-align:center;color:#7e8ba5;font-size:12px;margin:6px 0 25px}
+.record-controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.primary-button,.secondary-button,.stop-button{display:flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:12px;padding:13px 19px;font-weight:700;font-size:13px;transition:transform .15s,filter .15s}
+.primary-button{background:#8878ff;color:white;box-shadow:0 8px 24px #8878ff30}
+.secondary-button{background:#293650;color:#e3e9f7;border:1px solid #3b4967}
+.stop-button{background:#4a2638;color:#ffb8c9;border:1px solid #71354d}
+.primary-button:hover,.secondary-button:hover,.stop-button:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.feature-strip{margin:30px -32px 0;padding:17px 20px;background:#0e1528;border-top:1px solid #293550;display:flex;justify-content:center;gap:26px;flex-wrap:wrap}
+.feature-strip div{display:flex;align-items:center;gap:8px;color:#8d9bb5;font-size:11px}
+.feature-strip svg{color:#9b91ff}
+.error-message{margin:18px auto 0;max-width:600px;padding:12px 14px;border:1px solid #8e4254;border-radius:10px;background:#3a1c2a;color:#ffc1ce;font-size:13px}
+.history-section{margin-top:44px}
+.section-heading{margin-bottom:18px}
+.count{display:inline-grid;place-items:center;vertical-align:middle;margin-left:7px;background:#29264f;color:#bcb4ff;border-radius:8px;font:600 12px 'DM Sans',sans-serif;padding:3px 7px}
+.section-note{color:#7e8ba5;font-size:11px}
+.empty-state{border:1px dashed #34415d;border-radius:18px;padding:38px 18px;text-align:center;background:#10182a88}
+.empty-icon{width:52px;height:52px;margin:0 auto 14px;display:grid;place-items:center;border-radius:16px;background:#242345;color:#9c91ff}
+.empty-state h3{font:600 15px 'Space Grotesk',sans-serif;margin:0 0 8px}
+.empty-state p{color:#8290aa;font-size:12px;margin:0}
+.recording-list{display:grid;gap:12px}
+.recording-item{display:flex;align-items:flex-start;gap:14px;border:1px solid #293550;border-radius:16px;background:#131c30;padding:17px}
+.audio-icon{flex-shrink:0;width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:#29264f;color:#a69cff}
+.recording-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+.recording-info strong{font-size:13px;overflow-wrap:anywhere}
+.recording-info span{color:#8190aa;font-size:11px}
+audio{width:min(100%,400px);height:34px;margin-top:4px}
+.item-actions{display:flex;gap:5px}
+.item-actions button{display:grid;place-items:center;width:34px;height:34px;border:1px solid #34415d;background:#1a2540;color:#aab7d0;border-radius:9px}
+.item-actions button:hover{color:white;border-color:#8375ff}
+footer{text-align:center;color:#5f6c85;font-size:10px;margin-top:36px}
+@media(max-width:600px){.app-shell{width:calc(100% - 24px);padding-top:18px}.hero{padding:48px 0 25px}.hero-copy{font-size:13px}.recorder-card{padding:22px 18px 0}.feature-strip{margin-left:-18px;margin-right:-18px;gap:12px;align-items:flex-start;flex-direction:column;padding-left:22px}.privacy-pill{font-size:0;padding:9px}.privacy-pill svg{width:17px;height:17px}.section-heading{align-items:flex-start;flex-direction:column;gap:7px}.recording-item{flex-wrap:wrap}.recording-info{width:calc(100% - 54px)}.item-actions{margin-left:54px}}

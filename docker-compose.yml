@@ -1,0 +1,16 @@
+services:
+  backend:
+    build: ./backend
+    container_name: voicenote-backend
+    ports:
+      - "8000:8000"
+    environment:
+      APP_NAME: VoiceNote API
+      UPLOAD_DIR: /data/audio
+      MAX_UPLOAD_MB: 100
+    volumes:
+      - voicenote_audio:/data/audio
+    restart: unless-stopped
+
+volumes:
+  voicenote_audio:

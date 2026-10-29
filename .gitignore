@@ -1,0 +1,17 @@
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Python
+backend/.venv/
+backend/__pycache__/
+**/*.pyc
+
+# Runtime data and secrets
+backend/data/
+backend/.env
+.env
+.DS_Store
+
+# External reference repository
+whisper/
