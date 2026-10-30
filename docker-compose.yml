@@ -10,25 +10,23 @@ services:
     deploy:
       resources:
         limits:
-          memory: 3G        # Whisper base ~350 MB, để dư cho hệ điều hành
-          cpus: "2.0"
+          memory: 4G
+          cpus: "3.5"
         reservations:
-          memory: 512M
+          memory: 1G
 
-    ports:
-      - "127.0.0.1:8000:8000"   # Chỉ bind localhost; Caddy sẽ proxy
+    env_file:
+      - .env
 
     environment:
-      APP_NAME: VoiceNote AI
-      UPLOAD_DIR: /data/audio
-      DB_PATH: /data/db/voicenote.db
-      MAX_UPLOAD_MB: "150"
-      WHISPER_MODEL: base        # tiny | base | small
-      WHISPER_DEVICE: cpu
-      WHISPER_COMPUTE: int8
-      TRANSLATION_PROVIDER: google  # google | ollama | mock
-      # API_TOKEN: "THAY_BANG_MAT_KHAU_MANH"   # Bỏ comment khi mở ra ngoài LAN
-      # CORS_ORIGINS: "https://voicenote.example.com"
+      APP_NAME: ${APP_NAME:-VoiceNote AI}
+      UPLOAD_DIR: ${UPLOAD_DIR:-/data/audio}
+      DB_PATH: ${DB_PATH:-/data/db/voicenote.db}
+      MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-300}
+      WHISPER_MODEL: ${WHISPER_MODEL:-medium}
+      WHISPER_DEVICE: ${WHISPER_DEVICE:-cpu}
+      WHISPER_COMPUTE: ${WHISPER_COMPUTE:-int8}
+      TRANSLATION_PROVIDER: ${TRANSLATION_PROVIDER:-google}
 
     volumes:
       - voicenote_audio:/data/audio   # File âm thanh
