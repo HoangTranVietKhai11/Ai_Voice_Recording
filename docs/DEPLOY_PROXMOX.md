@@ -210,3 +210,24 @@ docker compose up -d
 | Upload thất bại (413) | File vượt MAX_UPLOAD_MB | Tăng `MAX_UPLOAD_MB` trong .env |
 | Transcribe chậm | CPU yếu, model lớn | Dùng `WHISPER_MODEL=tiny` hoặc `WHISPER_COMPUTE=int8` |
 | Lỗi 401 | Thiếu header Authorization | Đặt `API_TOKEN` đúng trong frontend |
+
+---
+
+## Truy cập Public trên Điện thoại / 4G (Cloudflare Tunnel)
+
+Để điện thoại mở được trực tiếp qua 4G/5G hoặc chia sẻ bạn bè mà không cần cài VPN:
+
+```bash
+docker run -d --name voicenote-tunnel \
+  --restart unless-stopped \
+  --network voicenote_default \
+  cloudflare/cloudflared:latest tunnel \
+  --no-autoupdate \
+  --url http://voicenote-caddy:80
+```
+
+Xem đường link public tự sinh:
+```bash
+docker logs voicenote-tunnel 2>&1 | grep -o 'https://.*\.trycloudflare\.com'
+```
+
