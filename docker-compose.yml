@@ -11,9 +11,9 @@ services:
       resources:
         limits:
           memory: 4G
-          cpus: "3.5"
+          cpus: "2.0"
         reservations:
-          memory: 1G
+          memory: 512M
 
     env_file:
       - .env
