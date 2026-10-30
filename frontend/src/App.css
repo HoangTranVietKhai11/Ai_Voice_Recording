@@ -1126,3 +1126,232 @@ footer {
   flex-shrink: 0;
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   MOBILE OPTIMIZATIONS (Smartphones & Tablets <= 680px)
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 680px) {
+  body {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .app-shell {
+    width: 100%;
+    padding: calc(12px + env(safe-area-inset-top, 0px)) 14px calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .topbar {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .brand-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+  }
+
+  .brand-title {
+    font-size: 17px;
+  }
+
+  .brand-subtitle {
+    font-size: 11px;
+  }
+
+  .privacy-pill {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  .privacy-pill span {
+    display: none;
+  }
+  .privacy-pill::after {
+    content: "Bảo mật";
+  }
+
+  .hero {
+    margin: 16px 0 24px;
+    padding: 0 4px;
+  }
+
+  .hero-eyebrow {
+    font-size: 10px;
+    padding: 4px 10px;
+    letter-spacing: 0.1em;
+  }
+
+  .hero h1 {
+    font-size: 26px !important;
+    line-height: 1.25;
+    margin: 12px 0 8px;
+  }
+
+  .hero-subtitle {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  /* Recorder Card Mobile */
+  .recorder-card {
+    padding: 22px 16px 18px;
+    border-radius: 18px;
+    margin-bottom: 24px;
+  }
+
+  .recorder-header-badge {
+    font-size: 10px;
+  }
+
+  .timer {
+    font-size: 50px !important;
+    letter-spacing: -1.5px;
+    margin: 10px 0 4px;
+  }
+
+  .timer-caption {
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+
+  .record-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .record-controls button {
+    width: 100%;
+    min-height: 52px;
+    font-size: 16px;
+    border-radius: 14px;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(124, 108, 255, 0.25);
+  }
+
+  .primary-button:active,
+  .secondary-button:active,
+  .stop-button:active {
+    transform: scale(0.98);
+  }
+
+  /* Upload zone Mobile */
+  .upload-zone {
+    margin: 16px 0 0;
+    padding: 18px 12px;
+    border-radius: 14px;
+    touch-action: manipulation;
+  }
+
+  .upload-zone:active {
+    background: #1b2640;
+    border-color: #7c6cff;
+  }
+
+  .upload-hint .upload-main-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e2e8f0;
+  }
+
+  .upload-hint .upload-exts {
+    font-size: 11px;
+    color: #7a8ba8;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  .upload-pending {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .upload-pending-info {
+    text-align: center;
+  }
+
+  .upload-pending-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .upload-pending-actions .upload-confirm-btn {
+    flex: 1;
+    min-height: 44px;
+  }
+
+  .feature-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 12px;
+    margin-top: 18px;
+    font-size: 12px;
+  }
+
+  /* Recordings List & Cards Mobile */
+  .recordings-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .recording-card-item {
+    padding: 14px;
+    border-radius: 16px;
+    gap: 12px;
+  }
+
+  .item-main-header {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .audio-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .meta-subline {
+    font-size: 11px;
+    gap: 8px;
+  }
+
+  .item-actions {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .item-actions button {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  /* Transcript Box Mobile */
+  .transcript-box {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .transcript-content {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .transcript-actions {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .transcript-actions button {
+    min-height: 38px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+

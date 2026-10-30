@@ -12,7 +12,7 @@ const ACCEPTED_EXTS = [
   '.mp3', '.mp4', '.m4a', '.wav', '.webm', '.ogg',
   '.mov', '.mpeg', '.mpg', '.aac', '.flac', '.mkv', '.wma', '.opus',
 ]
-const ACCEPT_ATTR = ACCEPTED_EXTS.join(',')
+const ACCEPT_ATTR = 'audio/*,video/*,' + ACCEPTED_EXTS.join(',')
 
 function formatTime(totalSeconds: number) {
   const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0')
@@ -59,18 +59,20 @@ export function Recorder({ isBusy, busyMessage, onRecordingComplete, onError }: 
   }, [])
 
   // ── Validate file extension ─────────────────────────────────────────
-  function isValidExt(filename: string) {
-    const ext = '.' + filename.split('.').pop()?.toLowerCase()
-    return ACCEPTED_EXTS.includes(ext)
+  function isValidExt(file: File) {
+    const ext = '.' + file.name.split('.').pop()?.toLowerCase()
+    if (ACCEPTED_EXTS.includes(ext)) return true
+    if (file.type && (file.type.startsWith('audio/') || file.type.startsWith('video/'))) return true
+    return false
   }
 
   function handleFileSelect(file: File) {
-    if (!isValidExt(file.name)) {
-      onError(`Định dạng không hỗ trợ: .${file.name.split('.').pop()}. Chấp nhận: ${ACCEPTED_EXTS.join(', ')}`)
+    if (!isValidExt(file)) {
+      onError(`Định dạng không hỗ trợ: ${file.name}. Vui lòng chọn file âm thanh hoặc video.`)
       return
     }
-    if (file.size > 200 * 1024 * 1024) {
-      onError('File quá lớn (tối đa 200 MB).')
+    if (file.size > 300 * 1024 * 1024) {
+      onError('File quá lớn (tối đa 300 MB).')
       return
     }
     setPendingFile(file)
@@ -282,10 +284,10 @@ export function Recorder({ isBusy, busyMessage, onRecordingComplete, onError }: 
             </div>
           ) : (
             <div className="upload-hint">
-              <Upload size={20} className="upload-icon" />
-              <span>Kéo thả hoặc <strong>nhấn để chọn file</strong></span>
+              <Upload size={22} className="upload-icon" />
+              <span className="upload-main-text">Chạm để chọn file hoặc kéo thả</span>
               <span className="upload-exts">
-                MP3 · MP4 · MOV · M4A · WAV · WebM · AAC · FLAC · OGG · MKV · WMA · OPUS
+                Ghi âm điện thoại, Voice Memos, MP3, MP4, M4A, WAV, WebM...
               </span>
             </div>
           )}
