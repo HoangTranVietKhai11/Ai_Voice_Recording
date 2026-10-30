@@ -119,9 +119,18 @@ export default function App() {
     setBusyMessage('Đang tải tệp âm thanh lên máy chủ...')
 
     try {
-      const ext = mimeType.includes('mp4') ? 'm4a' : mimeType.includes('wav') ? 'wav' : 'webm'
-      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
-      const filename = `recording_${timestamp}.${ext}`
+      let filename: string
+      if (blob instanceof File && blob.name) {
+        filename = blob.name
+      } else {
+        let ext = 'webm'
+        if (mimeType.includes('mp4')) ext = 'm4a'
+        else if (mimeType.includes('wav')) ext = 'wav'
+        else if (mimeType.includes('ogg') || mimeType.includes('opus')) ext = 'ogg'
+        else if (mimeType.includes('mpeg') || mimeType.includes('mp3')) ext = 'mp3'
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
+        filename = `recording_${timestamp}.${ext}`
+      }
 
       const formData = new FormData()
       formData.append('file', blob, filename)

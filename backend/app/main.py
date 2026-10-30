@@ -34,7 +34,10 @@ APP_NAME = os.getenv("APP_NAME", "VoiceNote API")
 UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", "./data/audio"))
 MAX_UPLOAD_MB = int(os.getenv("MAX_UPLOAD_MB", "100"))
 MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
-ALLOWED_SUFFIXES = {".webm", ".wav", ".mp3", ".m4a", ".mp4", ".ogg", ".mpeg"}
+ALLOWED_SUFFIXES = {
+    ".webm", ".wav", ".mp3", ".m4a", ".mp4", ".ogg", ".mpeg",
+    ".mov", ".aac", ".flac", ".mkv", ".wma", ".opus", ".mpg",
+}
 
 WHISPER_MODEL = os.getenv("WHISPER_MODEL", "base")
 WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", "cpu")

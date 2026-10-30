@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Mic, Pause, Play, Square, Loader2, Sparkles, ShieldCheck, CheckCircle2 } from 'lucide-react'
+import { Mic, Pause, Play, Square, Loader2, Sparkles, ShieldCheck, Upload, FileAudio, X } from 'lucide-react'
 
 type RecorderProps = {
   isBusy: boolean
@@ -8,24 +8,36 @@ type RecorderProps = {
   onError: (msg: string) => void
 }
 
+const ACCEPTED_EXTS = [
+  '.mp3', '.mp4', '.m4a', '.wav', '.webm', '.ogg',
+  '.mov', '.mpeg', '.mpg', '.aac', '.flac', '.mkv', '.wma', '.opus',
+]
+const ACCEPT_ATTR = ACCEPTED_EXTS.join(',')
+
 function formatTime(totalSeconds: number) {
-  const minutes = Math.floor(totalSeconds / 60)
-    .toString()
-    .padStart(2, '0')
+  const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0')
   const seconds = (totalSeconds % 60).toString().padStart(2, '0')
   return `${minutes}:${seconds}`
+}
+
+function formatBytes(bytes: number) {
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`
 }
 
 export function Recorder({ isBusy, busyMessage, onRecordingComplete, onError }: RecorderProps) {
   const [recording, setRecording] = useState(false)
   const [paused, setPaused] = useState(false)
   const [elapsed, setElapsed] = useState(0)
+  const [dragOver, setDragOver] = useState(false)
+  const [pendingFile, setPendingFile] = useState<File | null>(null)
 
   const recorderRef = useRef<MediaRecorder | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const chunksRef = useRef<BlobPart[]>([])
   const startedAtRef = useRef(0)
   const elapsedRef = useRef(0)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (!recording || paused) return
@@ -46,6 +58,46 @@ export function Recorder({ isBusy, busyMessage, onRecordingComplete, onError }: 
     }
   }, [])
 
+  // ── Validate file extension ─────────────────────────────────────────
+  function isValidExt(filename: string) {
+    const ext = '.' + filename.split('.').pop()?.toLowerCase()
+    return ACCEPTED_EXTS.includes(ext)
+  }
+
+  function handleFileSelect(file: File) {
+    if (!isValidExt(file.name)) {
+      onError(`Định dạng không hỗ trợ: .${file.name.split('.').pop()}. Chấp nhận: ${ACCEPTED_EXTS.join(', ')}`)
+      return
+    }
+    if (file.size > 200 * 1024 * 1024) {
+      onError('File quá lớn (tối đa 200 MB).')
+      return
+    }
+    setPendingFile(file)
+    onError('')
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault()
+    setDragOver(false)
+    const file = e.dataTransfer.files[0]
+    if (file) handleFileSelect(file)
+  }
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) handleFileSelect(file)
+    e.target.value = ''
+  }
+
+  async function uploadPendingFile() {
+    if (!pendingFile) return
+    const mimeType = pendingFile.type || 'audio/mpeg'
+    onRecordingComplete(pendingFile, 0, mimeType)
+    setPendingFile(null)
+  }
+
+  // ── Microphone recording ────────────────────────────────────────────
   async function startRecording() {
     onError('')
     if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
@@ -142,9 +194,7 @@ export function Recorder({ isBusy, busyMessage, onRecordingComplete, onError }: 
                 : 'Sẵn sàng ghi âm'}
           </h2>
         </div>
-        <div
-          className={`status-dot ${recording ? 'active' : ''} ${isBusy ? 'busy' : ''}`}
-        >
+        <div className={`status-dot ${recording ? 'active' : ''} ${isBusy ? 'busy' : ''}`}>
           <span />
           {isBusy
             ? 'PROCESSING'
@@ -162,16 +212,12 @@ export function Recorder({ isBusy, busyMessage, onRecordingComplete, onError }: 
           ? busyMessage || 'Đang tải lên và xử lý qua Whisper AI...'
           : recording
             ? 'Thời lượng phiên ghi âm hiện tại'
-            : 'Nhấn nút micro để bắt đầu một phiên ghi âm mới'}
+            : 'Nhấn nút micro để ghi hoặc kéo thả file âm thanh bên dưới'}
       </p>
 
       <div className="record-controls">
         {!recording ? (
-          <button
-            className="primary-button"
-            disabled={isBusy}
-            onClick={startRecording}
-          >
+          <button className="primary-button" disabled={isBusy} onClick={startRecording}>
             {isBusy ? <Loader2 size={19} className="spin" /> : <Mic size={19} />}
             {isBusy ? 'Đang xử lý...' : 'Bắt đầu ghi'}
           </button>
@@ -187,16 +233,73 @@ export function Recorder({ isBusy, busyMessage, onRecordingComplete, onError }: 
               </button>
             )}
             <button className="stop-button" onClick={stopRecording}>
-              <Square size={16} fill="currentColor" /> Dừng ghi & chuyển chữ
+              <Square size={16} fill="currentColor" /> Dừng ghi &amp; chuyển chữ
             </button>
           </>
         )}
       </div>
 
+      {/* ── Upload file khu vực ────────────────────────────────────── */}
+      {!recording && (
+        <div
+          className={`upload-zone ${dragOver ? 'drag-over' : ''} ${isBusy ? 'disabled' : ''}`}
+          onDragOver={(e) => { e.preventDefault(); if (!isBusy) setDragOver(true) }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={!isBusy ? handleDrop : undefined}
+          onClick={() => !isBusy && !pendingFile && fileInputRef.current?.click()}
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept={ACCEPT_ATTR}
+            style={{ display: 'none' }}
+            onChange={handleInputChange}
+          />
+
+          {pendingFile ? (
+            <div className="upload-pending">
+              <FileAudio size={22} className="upload-file-icon" />
+              <div className="upload-pending-info">
+                <span className="upload-filename">{pendingFile.name}</span>
+                <span className="upload-filesize">{formatBytes(pendingFile.size)}</span>
+              </div>
+              <div className="upload-pending-actions">
+                <button
+                  className="primary-button upload-confirm-btn"
+                  onClick={(e) => { e.stopPropagation(); uploadPendingFile() }}
+                  disabled={isBusy}
+                >
+                  <Upload size={15} /> Tải lên &amp; Phiên âm
+                </button>
+                <button
+                  className="icon-btn"
+                  onClick={(e) => { e.stopPropagation(); setPendingFile(null) }}
+                  title="Hủy"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="upload-hint">
+              <Upload size={20} className="upload-icon" />
+              <span>Kéo thả hoặc <strong>nhấn để chọn file</strong></span>
+              <span className="upload-exts">
+                MP3 · MP4 · MOV · M4A · WAV · WebM · AAC · FLAC · OGG · MKV · WMA · OPUS
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="feature-strip">
         <div>
           <Mic size={17} />
           <span>Ghi âm trực tiếp trên trình duyệt</span>
+        </div>
+        <div>
+          <Upload size={17} />
+          <span>Upload file có sẵn (MP3, MP4, MOV...)</span>
         </div>
         <div>
           <Sparkles size={17} />

@@ -274,9 +274,125 @@ button:disabled {
   font-size: 12px;
 }
 
+/* ── Upload zone ────────────────────────────────────────────────────── */
+.upload-zone {
+  margin: 20px 0 0;
+  border: 2px dashed #293550;
+  border-radius: 16px;
+  padding: 20px 24px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  background: #0d1525;
+}
+
+.upload-zone:hover:not(.disabled) {
+  border-color: #7c6cff;
+  background: #11193a;
+}
+
+.upload-zone.drag-over {
+  border-color: #7c6cff;
+  background: #1a1f4a;
+  box-shadow: 0 0 0 4px #7c6cff20;
+}
+
+.upload-zone.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.upload-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: #8c98b3;
+  font-size: 14px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.upload-hint strong {
+  color: #a8b5d0;
+}
+
+.upload-icon {
+  color: #7c6cff;
+  margin-bottom: 4px;
+}
+
+.upload-exts {
+  font-size: 11px;
+  color: #556078;
+  letter-spacing: 0.03em;
+  margin-top: 2px;
+}
+
+.upload-pending {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.upload-file-icon {
+  color: #7c6cff;
+  flex-shrink: 0;
+}
+
+.upload-pending-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.upload-filename {
+  font-size: 14px;
+  font-weight: 600;
+  color: #d0daf0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.upload-filesize {
+  font-size: 12px;
+  color: #677898;
+}
+
+.upload-pending-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.upload-confirm-btn {
+  padding: 10px 16px !important;
+  font-size: 13px !important;
+}
+
+.icon-btn {
+  border: 1px solid #293650;
+  border-radius: 8px;
+  padding: 8px;
+  background: #111a3088;
+  color: #8c98b3;
+  display: flex;
+  align-items: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.icon-btn:hover {
+  background: #3a1c2a;
+  color: #ffc1ce;
+}
+
 .feature-strip svg {
   color: #9b91ff;
 }
+
 
 .error-banner {
   margin: 20px auto 0;
