@@ -28,6 +28,10 @@ from app.translation_service import get_translation_service
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # ── Cấu hình qua biến môi trường ──────────────────────────────────────
 
 APP_NAME = os.getenv("APP_NAME", "VoiceNote API")
@@ -109,32 +113,13 @@ async def token_auth_middleware(request: Request, call_next):
     return await call_next(request)
 
 
-# ── Static files (chỉ mount khi thư mục tồn tại – tức là trong Docker) ─────
+# ── Static assets (JS/CSS hash files trong container Docker) ───────────
 
 if STATIC_DIR.is_dir():
-    # Mount assets/ riêng (JS/CSS với tên hash)
     _assets = STATIC_DIR / "assets"
     if _assets.is_dir():
         app.mount("/assets", StaticFiles(directory=str(_assets)), name="assets")
 
-    @app.get("/", response_class=HTMLResponse, include_in_schema=False)
-    async def spa_root():
-        return (STATIC_DIR / "index.html").read_text(encoding="utf-8")
-
-    @app.get("/{full_path:path}", response_class=HTMLResponse, include_in_schema=False)
-    async def spa_fallback(full_path: str):
-        """SPA fallback: mọi route không phải /api/* đều trả về index.html."""
-        if full_path.startswith("api/"):
-            raise HTTPException(status_code=404)
-        index = STATIC_DIR / "index.html"
-        if not index.exists():
-            raise HTTPException(status_code=404)
-        return index.read_text(encoding="utf-8")
-
-else:
-    @app.get("/")
-    def root():
-        return {"name": APP_NAME, "docs": "/docs", "status": "running", "note": "Frontend chưa build"}
 
 
 # ── Endpoints ──────────────────────────────────────────────────────────
@@ -330,3 +315,26 @@ def translate_recording(req: TranslateRequest):
         "translation": translated_text,
         "translation_lang": target_lang,
     }
+
+
+# ── SPA Fallback (Đặt ở CUỐI CÙNG để không chặn các route /api/*) ─────
+
+if STATIC_DIR.is_dir():
+    @app.get("/", response_class=HTMLResponse, include_in_schema=False)
+    async def spa_root():
+        return (STATIC_DIR / "index.html").read_text(encoding="utf-8")
+
+    @app.get("/{full_path:path}", response_class=HTMLResponse, include_in_schema=False)
+    async def spa_fallback(full_path: str):
+        """SPA fallback: mọi route không phải /api/* đều trả về index.html."""
+        if full_path.startswith("api/"):
+            raise HTTPException(status_code=404, detail="API endpoint không tồn tại")
+        index = STATIC_DIR / "index.html"
+        if not index.exists():
+            raise HTTPException(status_code=404, detail="Frontend chưa được build")
+        return index.read_text(encoding="utf-8")
+else:
+    @app.get("/")
+    def root():
+        return {"name": APP_NAME, "docs": "/docs", "status": "running", "note": "Frontend chưa build"}
+
