@@ -1,12 +1,13 @@
 # Caddyfile cho VoiceNote AI
 
 {
+    default_sni 100.103.205.56
     log {
         level INFO
     }
 }
 
-# ── HTTP truy cập trực tiếp không cần chứng chỉ (Port 80) ─────────────
+# ── HTTP truy cập trực tiếp không cần SSL (Port 80) ───────────────────
 :80 {
     reverse_proxy app:8000
 }
@@ -15,7 +16,6 @@
 https://100.103.205.56, https://didongviet.tailcf4175.ts.net, https://10.0.10.50, https://10.0.11.93, https://localhost, https://127.0.0.1 {
     tls internal
 
-    # Header bảo mật cơ bản
     header {
         X-Frame-Options DENY
         X-Content-Type-Options nosniff
@@ -23,6 +23,5 @@ https://100.103.205.56, https://didongviet.tailcf4175.ts.net, https://10.0.10.50
         -Server
     }
 
-    # Proxy ngược tới ứng dụng FastAPI
     reverse_proxy app:8000
 }
